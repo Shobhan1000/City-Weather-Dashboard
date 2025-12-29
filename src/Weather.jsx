@@ -7,6 +7,21 @@ const Weather = () => {
   const [weather, setWeather] = useState(null);
   const [isButtonDisabled, setButtonDisabled] = useState(false);
   const CACHE_KEY = "lastWeather";
+  const [isCelsius, setIsCelsius] = useState(true);
+  const convertToF = () => setIsCelsius(false);
+  const convertToC = () => setIsCelsius(true);
+  const [isKm, setIsKm] = useState(true);
+  const convertToMiles = () => setIsKm(false);
+  const convertToKm = () => setIsKm(true);
+
+  const displayTemp = (tempC) => {
+    return isCelsius ? tempC.toFixed(1) : (tempC * 9/5 + 32).toFixed(1);
+  };
+
+  const displayVisibility = (visMeters) => {
+    if (isKm) return (visMeters / 1000).toFixed(1);
+    return (visMeters / 1609.344).toFixed(1);
+  };
 
   useEffect(() => {
     const cached = localStorage.getItem(CACHE_KEY);
@@ -105,8 +120,13 @@ const Weather = () => {
             {/* Weather Grid */}
             <div className="grid">
             <div>
-                <p><strong>Temperature</strong>{weather.main.temp}°C</p>
-                <p>Feels like {weather.main.feels_like}°C</p>
+                <p>
+                <strong>Temperature</strong> {displayTemp(weather.main.temp)}°{isCelsius ? "C" : "F"}
+                </p>
+                <p>Feels like {displayTemp(weather.main.feels_like)}°{isCelsius ? "C" : "F"}</p>
+                <button onClick={isCelsius ? convertToF : convertToC}>
+                Convert to °{isCelsius ? "F" : "C"}
+                </button>
             </div>
             <div>
                 <p><strong>Weather</strong>{weather.weather[0].main} - {weather.weather[0].description}</p>
@@ -121,7 +141,12 @@ const Weather = () => {
                 <p><strong>Wind</strong>{weather.wind.speed} m/s, {weather.wind.deg}°</p>
             </div>
             <div>
-                <p><strong>Visibility</strong>{(weather.visibility/1000).toFixed(1)} km</p>
+                <p>
+                <strong>Visibility</strong> {displayVisibility(weather.visibility)} {isKm ? "km" : "mi"}
+                </p>
+                <button onClick={isKm ? convertToMiles : convertToKm}>
+                Convert to {isKm ? "mi" : "km"}
+                </button>
             </div>
             <div>
                 <p><strong>Cloudiness</strong>{weather.clouds.all}%</p>
