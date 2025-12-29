@@ -63,13 +63,55 @@ const Weather = () => {
           <button type="submit" disabled={isButtonDisabled}>Get Weather</button>
         </form>
       </div>
-      {weather && (
-        <div>
-          <h2>{weather.name}</h2>
-          <p>Temperature: {weather.main.temp}°C</p>
-          <p>Weather: {weather.weather[0].description}</p>
+        {weather && (
+        <div
+            className={`weather-dashboard ${
+            weather.weather[0].main.toLowerCase().includes("cloud") ? "cloudy" :
+            weather.weather[0].main.toLowerCase().includes("rain") ? "rainy" :
+            weather.weather[0].main.toLowerCase().includes("snow") ? "snowy" :
+            weather.weather[0].main.toLowerCase().includes("clear") ? "sunny" : "default"
+            }`}
+        >
+            {/* City Header */}
+            <div className="city-header">
+            <h2>{weather.name}, {weather.sys.country}</h2>
+            <img
+                src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
+                alt={weather.weather[0].description}
+            />
+            </div>
+
+            {/* Weather Grid */}
+            <div className="grid">
+            <div>
+                <p><strong>Temperature</strong>{weather.main.temp}°C</p>
+                <p>Feels like {weather.main.feels_like}°C</p>
+            </div>
+            <div>
+                <p><strong>Weather</strong>{weather.weather[0].main} - {weather.weather[0].description}</p>
+            </div>
+            <div>
+                <p><strong>Humidity</strong>{weather.main.humidity}%</p>
+            </div>
+            <div>
+                <p><strong>Pressure</strong>{weather.main.pressure} hPa</p>
+            </div>
+            <div>
+                <p><strong>Wind</strong>{weather.wind.speed} m/s, {weather.wind.deg}°</p>
+            </div>
+            <div>
+                <p><strong>Visibility</strong>{(weather.visibility/1000).toFixed(1)} km</p>
+            </div>
+            <div>
+                <p><strong>Cloudiness</strong>{weather.clouds.all}%</p>
+            </div>
+            <div>
+                <p><strong>Sunrise</strong>{new Date(weather.sys.sunrise*1000).toLocaleTimeString()}</p>
+                <p><strong>Sunset</strong>{new Date(weather.sys.sunset*1000).toLocaleTimeString()}</p>
+            </div>
+            </div>
         </div>
-      )}
+        )}
     </>
   )
 }
