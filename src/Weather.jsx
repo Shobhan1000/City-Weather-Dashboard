@@ -1,12 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import './App.css'
 import axios from 'axios'
 
 const Weather = () => {
   const [city, setCity] = useState("");
   const [weather, setWeather] = useState(null);
-
   const [isButtonDisabled, setButtonDisabled] = useState(false);
+  const CACHE_KEY = "lastWeather";
+
+  useEffect(() => {
+    const cached = localStorage.getItem(CACHE_KEY);
+    if (cached) {
+      setWeather(JSON.parse(cached));
+      setCity(JSON.parse(cached).name);
+    }
+  }, []);
+
+  const handleFocus = () => {
+    setCity("");
+  };
 
   const disableButton = () => {
         setButtonDisabled(true);
@@ -31,6 +43,7 @@ const Weather = () => {
       console.log(response.data);
       setWeather(response.data);
       enableButton();
+      localStorage.setItem(CACHE_KEY, JSON.stringify(response.data));
     } catch (error) {
       console.error("Error fetching weather data:", error);
       if (error.response && error.response.status === 404) {
@@ -57,6 +70,7 @@ const Weather = () => {
               type="text" 
               value={city}
               placeholder="Enter city"
+              onFocus={handleFocus}
               onChange={(e) => setCity(e.target.value)}
             />
           </label>
