@@ -28,31 +28,38 @@ const Weather = () => {
         setButtonDisabled(false);
     }
   
-  const getWeather = async () => {
-    if (!city) {
+    const getWeather = async () => {
+    if (!city.trim()) {
         alert("Please enter a city name");
         return;
     }
 
     try {
-      disableButton();
-      const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
-      const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
-      
-      const response = await axios.get(url);
-      console.log(response.data);
-      setWeather(response.data);
-      enableButton();
-      localStorage.setItem(CACHE_KEY, JSON.stringify(response.data));
+        disableButton();
+        const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
+        const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+        
+        const response = await axios.get(url);
+        setWeather(response.data);
+        localStorage.setItem(CACHE_KEY, JSON.stringify(response.data));
     } catch (error) {
-      console.error("Error fetching weather data:", error);
-      if (error.response && error.response.status === 404) {
-        alert("City not found. Please check the city name and try again.");
-      }
-      setWeather(null);
-      enableButton();
+        console.error("Error fetching weather data:", error);
+        setWeather(null);
+
+        if (!error.response) {
+        // No response from server: API down or no internet
+        alert("Cannot reach the weather service. Check your internet connection or try again later.");
+        } else if (error.response.status === 404) {
+        // City not found
+        alert("City not found. Try another.");
+        } else {
+        // Other errors
+        alert("Something went wrong. Please try again.");
+        }
+    } finally {
+        enableButton();
     }
-  };
+    };
 
   function handleSubmit(e) {
     e.preventDefault();
