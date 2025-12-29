@@ -25,7 +25,7 @@ a:hover {
 body {
   margin: 0;
   display: flex;
-  place-items: center;
+  place-items: top center;
   min-width: 320px;
   min-height: 100vh;
 }
@@ -65,4 +65,39 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+.card form {
+  display: flex;
+  align-items: center;
+  gap: 16px; /* space between input and button */
+}
+
+.card label {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* space between text and input */
+}
+
+.card input[type="text"] {
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.card input[type="submit"] {
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: none;
+  background-color: #646cff;
+  color: white;
+  cursor: pointer;
+}
+
+.weatherCard {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #1a1a1a;
 }
